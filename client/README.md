@@ -18,3 +18,6 @@ Make sure you have the following installed:
 
    ```bash
    git clone https://github.com/Stary7/wisdom-3rd.git
+
+   ## npm install
+   ## npm start
