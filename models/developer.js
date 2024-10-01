@@ -8,6 +8,6 @@ const developerSchema = new mongoose.Schema({
   totalSqFt: Number,
   reasonForChoosing: String,
   website: String,
-});
+}, { timestamps: true }); // Timestamps for created and updated
 
 module.exports = mongoose.model('Developer', developerSchema);

@@ -1,0 +1,20 @@
+.navbar {
+    display: flex;
+    justify-content: space-around; /* Distribute links evenly */
+    background-color: #007bff; /* Bootstrap primary color */
+    padding: 10px 0; /* Vertical padding */
+  }
+  
+  .navbar a {
+    color: white; /* White text color */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold; /* Make the text bold */
+    padding: 10px 15px; /* Padding around the links */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth background color transition */
+  }
+  
+  .navbar a:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  

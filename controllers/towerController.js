@@ -3,14 +3,29 @@ const Tower = require('../models/tower');
 // Create Tower
 exports.createTower = async (req, res) => {
   try {
-    const newTower = new Tower(req.body);
-    await newTower.save();
-    res.status(201).json(newTower);
+      const { name, location, totalFloors, totalUnits, developerId, projectId } = req.body;
+
+      // Validate IDs
+      if (!developerId || !projectId) {
+          return res.status(400).json({ error: "developerId and projectId are required" });
+      }
+
+      const newTower = new Tower({ 
+          name, 
+          location, 
+          totalFloors, 
+          totalUnits, 
+          developerId, 
+          projectId 
+      });
+
+      await newTower.save(); // Save to the database
+      res.status(201).json({ message: 'Tower created successfully', tower: newTower });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+      console.error(error); // Log the error for debugging
+      res.status(500).json({ error: error.message });
   }
 };
-
 // Get All Towers
 exports.getTowers = async (req, res) => {
   try {

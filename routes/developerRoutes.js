@@ -1,8 +1,17 @@
 const express = require('express');
-const { createDeveloper, getDevelopers } = require('../controllers/developerController');
 const router = express.Router();
+const developerController = require('../controllers/developerController'); // Import the controller
 
-router.post('/', createDeveloper);
-router.get('/', getDevelopers);
+// Route to get all developers
+router.get('/', developerController.getAllDevelopers);
+
+// Route to add a new developer
+router.post('/', developerController.addDeveloper); // Changed to use base route
+
+// Route to update a developer by ID
+router.put('/:id', developerController.updateDeveloper);
+
+// Route to delete a developer by ID
+router.delete('/:id', developerController.deleteDeveloper);
 
 module.exports = router;

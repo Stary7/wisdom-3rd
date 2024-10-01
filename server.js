@@ -1,29 +1,27 @@
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./config/db');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db"); // MongoDB connection
+const developerRoutes = require("./routes/developerRoutes"); // Import routes
+const projectRoutes = require("./routes/projectRoutes"); // Import routes
+const seriesRoutes = require("./routes/seriesRoutes"); // Import routes
+const towerRoutes = require("./routes/towerRoutes"); // Import routes
+dotenv.config(); // Load environment variables
 
-// Routes
-const developerRoutes = require('./routes/developerRoutes');
-const projectRoutes = require('./routes/projectRoutes');
-const towerRoutes = require('./routes/towerRoutes');
-const seriesRoutes = require('./routes/seriesRoutes');
-
-// Initialize app
 const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); // Parse JSON bodies
 
-// Connect MongoDB
+// Connect to MongoDB
 connectDB();
 
-// Use Routes
-app.use('/api/developers', developerRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/towers', towerRoutes);
-app.use('/api/series', seriesRoutes);
+// Use developer routes
+app.use("/api/developers", developerRoutes); // Base route for developers
+app.use("/api/projects", projectRoutes);
+app.use("/api/towers", towerRoutes);
+app.use("/api/series", seriesRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5000;
