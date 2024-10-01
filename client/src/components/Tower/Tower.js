@@ -6,6 +6,7 @@ const Tower = () => {
     const [towers, setTowers] = useState([]);
     const [editingTower, setEditingTower] = useState(null);
     const [developers, setDevelopers] = useState([]); // State to hold developers
+    const [projects, setProjects] = useState([]); // State to hold projects
 
     // Fetch towers
     const fetchTowers = async () => {
@@ -24,6 +25,16 @@ const Tower = () => {
             setDevelopers(response.data); // Store developers in state
         } catch (error) {
             console.error('Error fetching developers:', error);
+        }
+    };
+
+    // Fetch projects
+    const fetchProjects = async () => {
+        try {
+            const response = await api.get('/projects'); // Adjust the endpoint according to your API
+            setProjects(response.data); // Store projects in state
+        } catch (error) {
+            console.error('Error fetching projects:', error);
         }
     };
 
@@ -53,12 +64,13 @@ const Tower = () => {
     useEffect(() => {
         fetchTowers();
         fetchDevelopers(); // Fetch developers on component mount
+        fetchProjects(); // Fetch projects on component mount
     }, []);
 
     return (
         <div>
             <h1>Towers</h1>
-            <TowerForm onSubmit={handleFormSubmit} initialData={editingTower || {}} developers={developers} /> {/* Pass developers */}
+            <TowerForm onSubmit={handleFormSubmit} initialData={editingTower || {}} developers={developers} projects={projects} /> {/* Pass developers and projects */}
             <ul>
                 {towers.map(tower => (
                     <li key={tower._id}>

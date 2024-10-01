@@ -1,38 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const SeriesForm = ({ onSubmit, initialData = {} }) => {
-  const [series, setSeries] = useState({
-    towerId: '',
-    seriesName: '',
-    seriesTypology: '',
-    bed: 0,
-    dimension: '',
-    bath: 0,
-    direction: '',
-    ...initialData,
-  });
+const SeriesForm = ({ onSubmit, initialData = {}, towers }) => {
+    const [series, setSeries] = useState({
+        name: '',
+        towerId: '', // Field to hold the selected tower ID
+        // Add any other fields needed for the series
+        ...initialData
+    });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSeries({ ...series, [name]: value });
-  };
+    useEffect(() => {
+        if (initialData) {
+            setSeries(initialData); // Populate form with existing data if editing
+        }
+    }, [initialData]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(series);
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSeries({ ...series, [name]: value });
+    };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="seriesName" value={series.seriesName} onChange={handleChange} placeholder="Series Name" required />
-      <input type="text" name="seriesTypology" value={series.seriesTypology} onChange={handleChange} placeholder="Series Typology" />
-      <input type="number" name="bed" value={series.bed} onChange={handleChange} placeholder="Beds" />
-      <input type="text" name="dimension" value={series.dimension} onChange={handleChange} placeholder="Dimension" />
-      <input type="number" name="bath" value={series.bath} onChange={handleChange} placeholder="Baths" />
-      <input type="text" name="direction" value={series.direction} onChange={handleChange} placeholder="Direction" />
-      <button type="submit">Submit</button>
-    </form>
-  );
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(series); // Pass the series object to the parent component
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <h2>{initialData._id ? 'Edit Series' : 'Create Series'}</h2>
+            <input
+                type="text"
+                name="name"
+                value={series.name}
+                onChange={handleChange}
+                placeholder="Series Name"
+                required
+            />
+
+            {/* Tower selection dropdown */}
+            <select
+                name="towerId"
+                value={series.towerId}
+                onChange={handleChange}
+                required
+            >
+                <option value="">Select Tower</option>
+                {Array.isArray(towers) && towers.map(tower => (
+                    <option key={tower._id} value={tower._id}>{tower.name}</option>
+                ))}
+            </select>
+
+            <button type="submit">{initialData._id ? 'Update' : 'Submit'}</button>
+        </form>
+    );
 };
 
 export default SeriesForm;

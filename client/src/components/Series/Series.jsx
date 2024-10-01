@@ -1,62 +1,86 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import api from '../../services/api'; // Adjust the path as needed
 import SeriesForm from './SeriesForm';
 
 const Series = () => {
-  const [seriesList, setSeriesList] = useState([]);
-  const [editingSeries, setEditingSeries] = useState(null);
+    const [towers, setTowers] = useState([]); // State to hold towers
+    const [series, setSeries] = useState([]); // State to hold series data
+    const [editingSeries, setEditingSeries] = useState(null); // State to manage editing series
 
-  const fetchSeries = async () => {
-    try {
-      const response = await api.get('/series');
-      setSeriesList(response.data);
-    } catch (error) {
-      console.error('Error fetching series:', error);
-    }
-  };
+    // Fetch towers from API
+    const fetchTowers = async () => {
+        try {
+            const response = await api.get('/towers'); // Adjust the endpoint according to your API
+            setTowers(response.data); // Store towers in state
+        } catch (error) {
+            console.error('Error fetching towers:', error);
+        }
+    };
 
-  const handleFormSubmit = async (series) => {
-    try {
-      if (series._id) {
-        await api.put(`/series/${series._id}`, series);
-      } else {
-        await api.post('/series', series);
-      }
-      fetchSeries();
-      setEditingSeries(null);
-    } catch (error) {
-      console.error('Error submitting series:', error);
-    }
-  };
+    // Fetch series from API
+    const fetchSeries = async () => {
+        try {
+            const response = await api.get('/series'); // Adjust the endpoint according to your API
+            setSeries(response.data); // Store series in state
+        } catch (error) {
+            console.error('Error fetching series:', error);
+        }
+    };
 
-  const handleDelete = async (id) => {
-    try {
-      await api.delete(`/series/${id}`);
-      fetchSeries();
-    } catch (error) {
-      console.error('Error deleting series:', error);
-    }
-  };
+    // Handle form submission
+    const handleFormSubmit = async (newSeries) => {
+        try {
+            if (newSeries._id) {
+                // If the series already has an ID, we're updating an existing series
+                await api.put(`/series/${newSeries._id}`, newSeries);
+            } else {
+                // If there's no ID, we're creating a new series
+                await api.post('/series', newSeries);
+            }
+            fetchSeries(); // Refresh the list of series
+            setEditingSeries(null); // Clear editing state
+        } catch (error) {
+            console.error('Error submitting series:', error);
+        }
+    };
 
-  useEffect(() => {
-    fetchSeries();
-  }, []);
+    const handleEdit = (seriesToEdit) => {
+        setEditingSeries(seriesToEdit); // Set the series to edit
+    };
 
-  return (
-    <div>
-      <h1>Series</h1>
-      <SeriesForm onSubmit={handleFormSubmit} initialData={editingSeries || {}} />
-      <ul>
-        {seriesList.map(series => (
-          <li key={series._id}>
-            {series.seriesName} - {series.seriesTypology}
-            <button onClick={() => setEditingSeries(series)}>Edit</button>
-            <button onClick={() => handleDelete(series._id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    const handleDelete = async (id) => {
+        try {
+            await api.delete(`/series/${id}`); // Delete the series
+            fetchSeries(); // Refresh the list of series
+        } catch (error) {
+            console.error('Error deleting series:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchTowers(); // Fetch towers on component mount
+        fetchSeries(); // Fetch series on component mount
+    }, []);
+
+    return (
+        <div>
+            <h1>Series</h1>
+            <SeriesForm 
+                onSubmit={handleFormSubmit} 
+                initialData={editingSeries || {}} 
+                towers={towers} // Pass towers to the form
+            />
+            <ul>
+                {series.map(seriesItem => (
+                    <li key={seriesItem._id}>
+                        {seriesItem.name} - Tower: {seriesItem.towerId}
+                        <button onClick={() => handleEdit(seriesItem)}>Edit</button>
+                        <button onClick={() => handleDelete(seriesItem._id)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 
 export default Series;

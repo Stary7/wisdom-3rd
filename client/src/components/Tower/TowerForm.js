@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const TowerForm = ({ onSubmit, initialData = {}, developers }) => {
+const TowerForm = ({ onSubmit, initialData = {}, developers, projects }) => {
     const [tower, setTower] = useState({
         name: '',
         location: '',
@@ -41,7 +41,13 @@ const TowerForm = ({ onSubmit, initialData = {}, developers }) => {
                 ))}
             </select>
 
-            <input type="text" name="projectId" value={tower.projectId} onChange={handleChange} placeholder="Project ID" required />
+            {/* Project selection dropdown */}
+            <select name="projectId" value={tower.projectId} onChange={handleChange} required>
+                <option value="">Select Project</option>
+                {Array.isArray(projects) && projects.map(proj => (
+                    <option key={proj._id} value={proj._id}>{proj.name}</option>
+                ))}
+            </select>
 
             <button type="submit">Submit</button>
         </form>
